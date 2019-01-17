@@ -19,7 +19,7 @@ const formatData = (data, numColumns) => {
   return data;
 };
 
-const numColumns = 4;
+const numColumns = 3;
 export default class App extends React.Component {
   renderItem = ({ item, index }) => {
     if (item.empty === true) {
