@@ -1,68 +1,228 @@
-import React from 'react';
-import { StyleSheet, Text, View, FlatList, Dimensions } from 'react-native';
+/**
+ * Sample React Native App
+ * https://github.com/facebook/react-native
+ *
+ * @format
+ * @flow
+ */
 
-const data = [
-  { key: 'A' }, { key: 'B' }, { key: 'C' }, { key: 'D' }, { key: 'E' }, { key: 'F' }, { key: 'G' }, { key: 'H' }, { key: 'I' }, { key: 'J' },
-  // { key: 'K' },
-  // { key: 'L' },
-];
+import React, {Component} from 'react';
+import {StyleSheet, Text, View, TextInput, Image} from 'react-native';
+import {createStackNavigator,createAppContainer,HeaderBackButton} from 'react-navigation';
+import {getMaster} from './services/FetchMaster';
+import { Button } from 'react-native-elements';
+import {getLogIn} from './services/LogIn.js';
+import LogInScreen from './screens/LogInScreen.js';
+import MessageBox from './screens/MessageBox.js';
+import MenuScreen from './screens/MenuScreen.js';
+import MenuOnOffScreen from './screens/MenuOnOffScreen.js';
+import MenuDetailScreen from './screens/MenuDetailScreen.js';
+import SpecialPriceSettingScreen from './screens/SpecialPriceSettingScreen.js';
+import BranchSettingScreen from './screens/BranchSettingScreen.js';
+import TestScreen from './screens/TestScreen.js';
 
-const formatData = (data, numColumns) => {
-  const numberOfFullRows = Math.floor(data.length / numColumns);
-
-  let numberOfElementsLastRow = data.length - (numberOfFullRows * numColumns);
-  while (numberOfElementsLastRow !== numColumns && numberOfElementsLastRow !== 0) {
-    data.push({ key: `blank-${numberOfElementsLastRow}`, empty: true });
-    numberOfElementsLastRow++;
+class LaunchScreen extends Component
+{
+  saveDetails = () => {
+      console.log('aaaa');
   }
 
-  return data;
-};
-
-const numColumns = 3;
-export default class App extends React.Component {
-  renderItem = ({ item, index }) => {
-    if (item.empty === true) {
-      return <View style={[styles.item, styles.itemInvisible]} />;
-    }
-    return (
-      <View
-        style={styles.item}
-      >
-        <Text style={styles.itemText}>{item.key}</Text>
-      </View>
-    );
-  };
-
+  componentDidMount()
+  {
+    return fetch('https://jummum.co/app/dev_jor/JORMasterGet.php')
+      .then((response) => response.json())
+      .then(this.props.navigation.navigate('LogInScreenKey'))
+      .catch((error) =>{
+        console.error(error);
+      });
+  }
   render() {
     return (
-      <FlatList
-        data={formatData(data, numColumns)}
-        style={styles.container}
-        renderItem={this.renderItem}
-        numColumns={numColumns}
-      />
+      // <View style={styles.root}>
+      <View style={styles.greenBackground} >
+        <View style={styles.centerInContainer} >
+         <Image
+           source={require("./assets/images/jummumLogoWithType.png")}
+           style={styles.jummumImage}
+         />
+       </View>
+       <View style={{alignContent: 'center'}}>
+        <Text style={styles.welcome}>Welcome</Text>
+        <Text style={styles.welcome}></Text>
+        <Text style={styles.welcomeDetail}>
+          Customize menu, promotion and reward to let your customers get the
+          most impressive experience
+        </Text>
+        </View>
+      </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
+
+  greenBackground: {
     flex: 1,
-    marginVertical: 20,
-  },
-  item: {
-    backgroundColor: '#4D243D',
-    alignItems: 'center',
+    flexDirection: 'column',
     justifyContent: 'center',
-    flex: 1,
-    margin: 1,
-    height: Dimensions.get('window').width / numColumns, // approximate a square
+    // alignSelf: 'stretch',
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    backgroundColor: "rgba(99,219,199,1)",
+    opacity: 1,
   },
-  itemInvisible: {
-    backgroundColor: 'transparent',
+  centerInContainer: {
+    alignItems: 'center',
   },
-  itemText: {
-    color: '#fff',
+  jummumImage: {
+    height:300,
+    width:246,
+  },
+  welcome: {
+    backgroundColor: "transparent",
+    fontFamily: "Prompt-SemiBold",
+    fontSize: 18,
+    textAlign: 'center',
+    color: '#FFFFFF',
+  },
+  welcomeDetail: {
+    backgroundColor: "transparent",
+    fontFamily: "Prompt-Regular",
+    fontSize: 15,
+    textAlign: 'center',
+    color: '#FFFFFF',
+  },
+  headerRightButton: {
+    backgroundColor: "transparent",
   },
 });
+
+const navigationOptions = ({ navigation }) => ({
+    headerRight: navigation.state.params.showNewButton?<Button buttonStyle={styles.headerRightButton} titleStyle={{fontFamily: "Prompt-SemiBold"}} title={"New"} onPress={navigation.state.params.handleNewMenu} />:"",
+    headerLeft: <HeaderBackButton tintColor="#FFFFFF" onPress={() => navigation.goBack(null)} />,
+    title: 'เมนู',
+    headerTintColor: '#ffffff',
+    headerStyle: {backgroundColor: 'rgba(99,219,199,1)',display:"flex"},
+    headerTitleStyle: {
+          fontFamily: "Prompt-SemiBold",
+          fontSize: 18,
+        },
+    swipeEnabled: false,
+    animationEnabled:false,
+});
+const AppNavigator = createStackNavigator({
+
+  LaunchScreen: {
+    screen: LaunchScreen,
+    navigationOptions: {
+    headerStyle: {display:"none"},
+    headerLeft: null
+    }
+  },
+  LogInScreenKey: {
+    screen: LogInScreen,
+    navigationOptions: {
+    headerStyle: {display:"none"},
+    headerLeft: null
+    }
+  },
+  MenuScreen: {
+    screen: MenuScreen,
+    navigationOptions: {
+      headerStyle: {display:"none"},
+      headerLeft: null
+    }
+  },
+  MenuOnOffScreen: {
+    screen: MenuOnOffScreen,
+    navigationOptions
+  },
+  MenuDetailScreen: {
+    screen: MenuDetailScreen,
+    navigationOptions: ({navigation}) => ({ //don't forget parentheses around the object notation
+        title: 'รายละเอียดเมนู',
+        headerTintColor: '#ffffff',
+        headerStyle: {backgroundColor: 'rgba(99,219,199,1)',display:"flex"},
+        headerTitleStyle: {
+              fontFamily: "Prompt-SemiBold",
+              fontSize: 18,
+            },
+        headerLeft: <HeaderBackButton tintColor="#FFFFFF"
+          onPress={() => {
+            navigation.state.params.onGoBack();
+            navigation.goBack(null);}} />,
+        headerRight: <Button buttonStyle={styles.headerRightButton} titleStyle={{fontFamily: "Prompt-SemiBold"}} title={"Save"} onPress={navigation.state.params.handleSave} />
+      })
+  },
+  SpecialPriceSettingScreen: {
+    screen: SpecialPriceSettingScreen,
+    navigationOptions: ({navigation}) => ({ //don't forget parentheses around the object notation
+        title: 'ตั้งค่าส่วนลด',
+        headerTintColor: '#ffffff',
+        headerStyle: {backgroundColor: 'rgba(99,219,199,1)',display:"flex"},
+        headerTitleStyle: {
+              fontFamily: "Prompt-SemiBold",
+              fontSize: 18,
+            },
+        headerLeft: <HeaderBackButton tintColor="#FFFFFF"
+          onPress={() => {
+            navigation.goBack(null);}} />,
+        headerRight: <Button buttonStyle={styles.headerRightButton} titleStyle={{fontFamily: "Prompt-SemiBold"}} title={"Save"} onPress={navigation.state.params.handleSave} />
+      })
+  },
+  BranchSettingScreen: {
+    screen: BranchSettingScreen,
+    navigationOptions: ({navigation}) => ({ //don't forget parentheses around the object notation
+        title: 'ตั้งค่าร้านอาหาร',
+        headerTintColor: '#ffffff',
+        headerStyle: {backgroundColor: 'rgba(99,219,199,1)',display:"flex"},
+        headerTitleStyle: {
+              fontFamily: "Prompt-SemiBold",
+              fontSize: 18,
+            },
+        headerLeft: <HeaderBackButton tintColor="#FFFFFF"
+          onPress={() => {
+            navigation.goBack(null);}}
+          />,
+        headerRight: <Button buttonStyle={styles.headerRightButton}
+          titleStyle={{fontFamily: "Prompt-SemiBold"}}
+          title={"Save"}
+          onPress={navigation.state.params.handleSave} />
+      })
+  },
+  TestScreen: {
+    screen: TestScreen,
+    navigationOptions: ({navigation}) => ({ //don't forget parentheses around the object notation
+        title: 'ตั้งค่าร้านอาหาร',
+        headerTintColor: '#ffffff',
+        headerStyle: {backgroundColor: 'rgba(99,219,199,1)',display:"flex"},
+        headerTitleStyle: {
+              fontFamily: "Prompt-SemiBold",
+              fontSize: 18,
+            },
+        headerLeft: <HeaderBackButton tintColor="#FFFFFF"
+          onPress={() => {
+            navigation.goBack(null);}}
+          />,
+        headerRight: <Button buttonStyle={styles.headerRightButton}
+          titleStyle={{fontFamily: "Prompt-SemiBold"}}
+          title={"Save"}
+          onPress={navigation.state.params.handleSave} />
+      })
+  },
+  MessageBox: {
+    screen: MessageBox,
+    navigationOptions: {
+    headerStyle: {display:"none"},
+    headerLeft: null
+    }
+  }
+});
+
+export default createAppContainer(AppNavigator)
+{
+
+};

@@ -3,6 +3,11 @@ package com.helloworld;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.react.rnspinkit.RNSpinkitPackage;
+import com.imagepicker.ImagePickerPackage;
+import com.apsl.versionnumber.RNVersionNumberPackage;
+import com.oblador.vectoricons.VectorIconsPackage;
+import com.kevinresol.react_native_default_preference.RNDefaultPreferencePackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -24,6 +29,11 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNSpinkitPackage(),
+            new ImagePickerPackage(),
+            new RNVersionNumberPackage(),
+            new VectorIconsPackage(),
+            new RNDefaultPreferencePackage(),
             new RNGestureHandlerPackage()
       );
     }

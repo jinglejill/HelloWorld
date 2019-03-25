@@ -137,6 +137,11 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-spinkit')
+    compile project(':react-native-image-picker')
+    compile project(':react-native-version-number')
+    compile project(':react-native-vector-icons')
+    compile project(':react-native-default-preference')
     compile project(':react-native-gesture-handler')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
